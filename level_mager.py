@@ -10,7 +10,12 @@ pygame.init()
 class Game:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((800, 600))
+        infoObject = pygame.display.Info()
+        app_window_relative_size = (0.9, 0.8)
+
+        x = int(infoObject.current_w * app_window_relative_size[0])
+        y = int(infoObject.current_h * app_window_relative_size[1])
+        self.screen = pygame.display.set_mode((x, y))
         self.clock = pygame.time.Clock()
         self.running = True
         self.current_level = Level1(self)

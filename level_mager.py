@@ -11,7 +11,7 @@ class Game:
     def __init__(self):
         pygame.init()
         infoObject = pygame.display.Info()
-        app_window_relative_size = (0.9, 0.8)
+        app_window_relative_size = (1, 1)
 
         x = int(infoObject.current_w * app_window_relative_size[0])
         y = int(infoObject.current_h * app_window_relative_size[1])
@@ -22,6 +22,10 @@ class Game:
 
     def run(self):
         while self.running:
+
+            if not self.current_level.ran:
+                self.current_level.start()
+                self.current_level.ran = True
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:

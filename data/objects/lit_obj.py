@@ -28,33 +28,41 @@ class LitObject:
         base_light_lvl_inner = 200
         base_light_lvl_outer = 120
 
+        
+
         for light_source in self.light_source:
             lx, ly, r, g, b, light_lenth = light_source
             light_lenth *= -1
             
-            
             left_horisontal_light=lx - self.position[0] - width
             right_horisontal_light=-lx + self.position[0]
-            top_vertical_light=ly - self.position[1] - width
+            top_vertical_light=ly - self.position[1] - height
             bottom_vertical_light=-ly + self.position[1]
+            
+            
 
             if left_horisontal_light < light_lenth - width:
-                left_horisontal_light=-lx + self.position[0] - width 
+                left_horisontal_light=-lx + self.position[0] - width + light_lenth 
             else:
                 left_horisontal_light=lx - self.position[0] - width
             
             
             if right_horisontal_light < light_lenth - width:
-                right_horisontal_light= lx - self.position[0] + light_lenth * 2 - width
-
+                right_horisontal_light= lx - self.position[0] - width * 2 + light_lenth
+            else:
+                right_horisontal_light=-lx + self.position[0]
 
             
             if top_vertical_light < light_lenth:
-                top_vertical_light = -ly + self.position[1] + light_lenth * 2
-
-
+                top_vertical_light = -ly + self.position[1] - height + light_lenth
+            else:
+                top_vertical_light=ly - self.position[1] - height
+            
+            
             if bottom_vertical_light < light_lenth - height:
-                bottom_vertical_light = ly - self.position[1] + light_lenth * 2 - height
+                bottom_vertical_light = ly - self.position[1] - height * 2 + light_lenth
+            else:
+                bottom_vertical_light=-ly + self.position[1]
 
             shadow_colors = [
                 # --- Outer side bevels ---
@@ -89,5 +97,5 @@ class LitObject:
             for i in range(min(16, len(polygons))):
                 pygame.draw.polygon(shadow_layer, shadow_colors[i], polygons[i], 0)
         
-        asset_surface.blit(shadow_layer, (0, 0))
+            asset_surface.blit(shadow_layer, (0, 0))
         return asset_surface

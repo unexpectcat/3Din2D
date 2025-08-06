@@ -62,5 +62,7 @@ class Level1(Level):
 
         if self.diamond != None:
             print("drawn diamond")
-            self.diamond.set_light_position([(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 0, 0, 0, 100)])
+            self.diamond.set_light_position([(0, 0, 222, 114, 52, 500),
+                                             (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 0, 0, 0, 500)])
+
             screen.blit(self.diamond.get_surface(), (self.diamond.position))

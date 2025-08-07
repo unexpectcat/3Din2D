@@ -63,6 +63,67 @@ class LitObject:
                 bottom_vertical_light = ly - self.position[1] - height * 2 + light_lenth
             else:
                 bottom_vertical_light=-ly + self.position[1]
+            
+            shadow_colors = [
+                # --- Outer side bevels ---
+                (10, 10, 10, shade(top_vertical_light, 0, base=base_light_lvl_outer, limit=limit_light_lvl_outer)),        # Top
+                (10, 10, 10, shade(left_horisontal_light, 0, base=base_light_lvl_outer, limit=limit_light_lvl_outer)),     # Left
+                (10, 10, 10, shade(bottom_vertical_light, 0, base=base_light_lvl_outer, limit=limit_light_lvl_outer)),     # Bottom
+                (10, 10, 10, shade(right_horisontal_light, 0, base=base_light_lvl_outer, limit=limit_light_lvl_outer)),    # Right
+
+                # --- Outer corner bevels ---
+                (10, 10, 10, shade(top_vertical_light / 2, left_horisontal_light / 2, base=base_light_lvl_outer, limit=limit_light_lvl_outer)),   # Top-left
+                (10, 10, 10, shade(top_vertical_light / 2, right_horisontal_light / 2, base=base_light_lvl_outer, limit=limit_light_lvl_outer)),  # Top-right
+                (10, 10, 10, shade(bottom_vertical_light / 2, left_horisontal_light / 2, base=base_light_lvl_outer, limit=limit_light_lvl_outer)),# Bottom-left
+                (10, 10, 10, shade(bottom_vertical_light / 2, right_horisontal_light / 2, base=base_light_lvl_outer, limit=limit_light_lvl_outer)),# Bottom-right
+
+
+                # --- Inner side bevels ---
+                (10, 10, 10, shade(top_vertical_light, 0, base=base_light_lvl_inner, limit=limit_light_lvl_inner)),   # Inner top
+                (10, 10, 10, shade(left_horisontal_light, 0, base=base_light_lvl_inner, limit=limit_light_lvl_inner)),# Inner left
+                (10, 10, 10, shade(bottom_vertical_light, 0, base=base_light_lvl_inner, limit=limit_light_lvl_inner)),# Inner bottom
+                (10, 10, 10, shade(right_horisontal_light, 0, base=base_light_lvl_inner, limit=limit_light_lvl_inner)),# Inner right
+
+                # --- Inner corner bevels ---
+                (10, 10, 10, shade(top_vertical_light / 2, left_horisontal_light / 2, base=base_light_lvl_inner, limit=limit_light_lvl_inner)),  # Bevel top-left (duplicate ok)
+                (10, 10, 10, shade(top_vertical_light / 2, right_horisontal_light / 2, base=base_light_lvl_inner, limit=limit_light_lvl_inner)),  # Bevel top-right
+                (10, 10, 10, shade(left_horisontal_light / 2,bottom_vertical_light / 2, base=base_light_lvl_inner, limit=limit_light_lvl_inner)),# Bevel bottom-left
+                (10, 10, 10, shade(right_horisontal_light / 2, bottom_vertical_light / 2, base=base_light_lvl_inner, limit=limit_light_lvl_inner))# Bevel bottom-righ
+            ]
+
+            shadow_layer = pygame.Surface((width, height), flags=pygame.SRCALPHA)
+
+            polygons = self.get_polygons()
+            for i in range(min(16, len(polygons))):
+                for layer in polygons[i]:
+                    pygame.draw.polygon(shadow_layer, shadow_colors[i], layer, 0)
+
+            asset_surface.blit(shadow_layer, (0, 0))
+
+            left_horisontal_light = -lx + self.position[0]  # swapped with original right
+            right_horisontal_light = lx - self.position[0] - width  # swapped with original left
+            top_vertical_light = -ly + self.position[1]  # swapped with original bottom
+            bottom_vertical_light = ly - self.position[1] - height  # swapped with original top
+
+            if left_horisontal_light < light_lenth - width:
+                left_horisontal_light = lx - self.position[0] - width + light_lenth
+            else:
+                left_horisontal_light = -lx + self.position[0]
+
+            if right_horisontal_light < light_lenth - width:
+                right_horisontal_light = -lx + self.position[0] - width * 2 + light_lenth
+            else:
+                right_horisontal_light = lx - self.position[0] - width
+
+            if top_vertical_light < light_lenth:
+                top_vertical_light = ly - self.position[1] - height + light_lenth
+            else:
+                top_vertical_light = -ly + self.position[1]
+
+            if bottom_vertical_light < light_lenth - height:
+                bottom_vertical_light = -ly + self.position[1] - height * 2 + light_lenth
+            else:
+                bottom_vertical_light = ly - self.position[1] - height
 
             shadow_colors = [
                 # --- Outer side bevels ---
@@ -94,8 +155,12 @@ class LitObject:
             shadow_layer = pygame.Surface((width, height), flags=pygame.SRCALPHA)
 
             polygons = self.get_polygons()
+            # for i in range(min(16, len(polygons))):
+            #     pygame.draw.polygon(shadow_layer, shadow_colors[i], polygons[i], 0)
             for i in range(min(16, len(polygons))):
-                pygame.draw.polygon(shadow_layer, shadow_colors[i], polygons[i], 0)
-        
+                for layer in polygons[i]:
+                    pygame.draw.polygon(shadow_layer, shadow_colors[i], layer, 0)
+
             asset_surface.blit(shadow_layer, (0, 0))
+
         return asset_surface
